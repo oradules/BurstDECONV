@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Oct 24 00:34:49 2021
+Created on Mon Jun 19 21:20:41 2023
 
 @author: rachel
 """
@@ -29,17 +29,17 @@ from scipy import interpolate
 from scipy.optimize import least_squares
 from fit2 import *
 #from fit3 import *
-from fit3_common import *
+from fit3_commonPlot import *
 
 
 
-class fitLong:
-    def __init__(self,path,parameter,combined,visualize,outputpath, fit3exp=True):
-        self.path=path
-        self.parameterpath=parameter
-        self.visualize = visualize
+class fitPlot:
+    def plotVals(path,parameter,combined,visualize,outputpath, fit3exp=True):
+        path=path
+        parameterpath=parameter
+        visualize = visualize
         ### parameters used
-        filecontent=np.load(self.parameterpath)
+        filecontent=np.load(parameterpath)
         Polym_speed=filecontent['Polym_speed']
         TaillePreMarq=filecontent['TaillePreMarq']
         TailleSeqMarq=filecontent['TailleSeqMarq']
@@ -51,7 +51,7 @@ class fitLong:
         DureeSignal=filecontent['DureeSignal']
         
         FreqEchSimu = 1/(EspaceInterPolyMin/Polym_speed) # how many interval(possible poly start position) in 1s
-        self.FreqEchSimu = FreqEchSimu 
+        FreqEchSimu = FreqEchSimu 
         
         ####### parameters for the plots
         fsz=16 #figure size
@@ -140,7 +140,7 @@ class fitLong:
         longFiles = list(filter(lambda x:'long' in x, file_name_list))
         print(longFiles)
         file_name_list = np.setdiff1d(file_name_list, longFiles, assume_unique=True)
-        self.file_name_list=file_name_list
+        #file_name_list=file_name_list
         nexp = len(file_name_list) # length of the list
         nfiles=nexp
         #######################################################################
@@ -267,7 +267,7 @@ class fitLong:
                 iend=fname.index('.mat') 
             name=fname[0:iend] 
             name=name.split('_')[1]
-            self.name= name 
+             
             
             
             ### where to write figure files 
@@ -287,44 +287,44 @@ class fitLong:
             num_possible_poly = round(DureeAnalysee/(EspaceInterPolyMin/Polym_speed))
 
                             ### Figure showing Data Signal Prediction
-            h=plt.figure(40)
-            sz= DataPred.shape
-            Y_normal = np.arange(1,sz[1]+1)
-            Y=Y_normal[::-1]
-            X = np.arange(0, sz[0])/FreqEchImg/60
-            plt.imshow(DataPred.T, cmap=cm_jet, extent=extentForPlot(X).result + extentForPlot(Y).result, aspect='auto', origin='upper')
-            plt.xlabel('Time [min]', fontsize=12)
-            plt.ylabel('Transcription site', fontsize=12)
-            cb= plt.colorbar()
-            cb.ax.tick_params(labelsize=fsz)
-            figfile=dirwrite+'/DataPred_'+name+'.pdf'
-            h.savefig(figfile, dpi=800) 
-            plt.close()
+            # h=plt.figure(40)
+            # sz= DataPred.shape
+            # Y_normal = np.arange(1,sz[1]+1)
+            # Y=Y_normal[::-1]
+            # X = np.arange(0, sz[0])/FreqEchImg/60
+            # plt.imshow(DataPred.T, cmap=cm_jet, extent=extentForPlot(X).result + extentForPlot(Y).result, aspect='auto', origin='upper')
+            # plt.xlabel('Time [min]', fontsize=12)
+            # plt.ylabel('Transcription site', fontsize=12)
+            # cb= plt.colorbar()
+            # cb.ax.tick_params(labelsize=fsz)
+            # figfile=dirwrite+'/DataPred_'+name+'.pdf'
+            # h.savefig(figfile, dpi=800) 
+            # plt.close()
 
-            ### Figure showing Data Signal Experimental
-            h = plt.figure(50)
-            plt.imshow(DataExp.T, cmap=cm_jet, extent=extentForPlot(X).result + extentForPlot(Y).result, aspect='auto', origin='upper')
-            plt.xlabel('Time [min]', fontsize=12)
-            plt.ylabel('Transcription site', fontsize=12)
-            plt.colorbar()
-            figfile=dirwrite+'/DataExp_'+name+'.pdf'
-            h.savefig(figfile, dpi=800) 
-            plt.close()
+            # ### Figure showing Data Signal Experimental
+            # h = plt.figure(50)
+            # plt.imshow(DataExp.T, cmap=cm_jet, extent=extentForPlot(X).result + extentForPlot(Y).result, aspect='auto', origin='upper')
+            # plt.xlabel('Time [min]', fontsize=12)
+            # plt.ylabel('Transcription site', fontsize=12)
+            # plt.colorbar()
+            # figfile=dirwrite+'/DataExp_'+name+'.pdf'
+            # h.savefig(figfile, dpi=800) 
+            # plt.close()
             
-            ### Figure showing Data Position Prediction
-            h=plt.figure(60)
-            Y_normal=np.arange(1, len(PosPred[0])+1)
-            Y=Y_normal[::-1]
-            X=np.arange(0,len(PosPred))*EspaceInterPolyMin/Polym_speed/60  -(TaillePreMarq+TailleSeqMarq+TaillePostMarq)/Polym_speed/60 ### time
-            df = pd.DataFrame(PosPred.T, columns=np.round(X,1))
-            xticks_label = np.unique(np.round(X,-1))
-            xticks = int(len(X)/len(xticks_label))
-            sns.heatmap(df,cmap='gray', xticklabels = xticks, yticklabels = round(len(PosPred[0])/4), cbar=False)
-            plt.xlabel('Time [min]', fontsize=12)   
-            plt.ylabel('Transcription site', fontsize=12)
-            figfile=dirwrite+'/PosPred'+name+'.pdf'
-            h.savefig(figfile, dpi=800) 
-            plt.close()
+            # ### Figure showing Data Position Prediction
+            # h=plt.figure(60)
+            # Y_normal=np.arange(1, len(PosPred[0])+1)
+            # Y=Y_normal[::-1]
+            # X=np.arange(0,len(PosPred))*EspaceInterPolyMin/Polym_speed/60  -(TaillePreMarq+TailleSeqMarq+TaillePostMarq)/Polym_speed/60 ### time
+            # df = pd.DataFrame(PosPred.T, columns=np.round(X,1))
+            # xticks_label = np.unique(np.round(X,-1))
+            # xticks = int(len(X)/len(xticks_label))
+            # sns.heatmap(df,cmap='gray', xticklabels = xticks, yticklabels = round(len(PosPred[0])/4), cbar=False)
+            # plt.xlabel('Time [min]', fontsize=12)   
+            # plt.ylabel('Transcription site', fontsize=12)
+            # figfile=dirwrite+'/PosPred'+name+'.pdf'
+            # h.savefig(figfile, dpi=800) 
+            # plt.close()
 
            
             ######### eliminate outliers handling short movie ########
@@ -461,44 +461,45 @@ class fitLong:
             censored=np.append(np.zeros(len(wt)),np.ones(len(wtc))) ### censored long movie       
             lDEL = len(DataExpLong[0])
             
-            [res, resl, resh] = fit2(dirwrite,name,dt,dtg,censored,censored_short,wt,wtc,lDEL,Total,Ninactive,visualize,time,sd)
-            df1 = pd.DataFrame([res.tolist(), resl.tolist(), resh.tolist()]) 
-            df1.to_excel(writer2states,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=1, header=False, index=False)
-            df2 = pd.DataFrame([name]) #filename
-            df2.to_excel(writer2states,sheet_name='Sheet1', startrow=4*(1+ifile)-3, startcol=0, header=False, index=False)
-            df11 = pd.DataFrame([res,resl,resh,['']])
-            df11.insert(0, "Data", df2)
-            df11.to_csv(csvfilename2states, mode='a', index=False, header=False)
+            # [res, resl, resh] = fit2(dirwrite,name,dt,dtg,censored,censored_short,wt,wtc,lDEL,Total,Ninactive,visualize,time,sd)
+            # df1 = pd.DataFrame([res.tolist(), resl.tolist(), resh.tolist()]) 
+            # df1.to_excel(writer2states,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=1, header=False, index=False)
+            # df2 = pd.DataFrame([name]) #filename
+            # df2.to_excel(writer2states,sheet_name='Sheet1', startrow=4*(1+ifile)-3, startcol=0, header=False, index=False)
+            # df11 = pd.DataFrame([res,resl,resh,['']])
+            # df11.insert(0, "Data", df2)
+            # df11.to_csv(csvfilename2states, mode='a', index=False, header=False)
             if fit3exp==True:
                             
                 ########## save parameters results for 3 state model
-                [resM1, reslM1, reshM1, resM2, reslM2, reshM2]=fit3_common(dirwrite,name,dt,dtg,censored,censored_short,wt,wtc,lDEL,Total,Ninactive,visualize,time,sd)
+                xsg,fsg,p2min,xlmin,flmin,p1min=fit3_commonPlot(dirwrite,name,dt,dtg,censored,censored_short,wt,wtc,lDEL,Total,Ninactive,visualize,time,sd)
 
-                #### Model M1            
-                df1M1 = pd.DataFrame([resM1.tolist(), #best result
-                        reslM1.tolist(), # low 
-                        reshM1.tolist()]) # high
+                # #### Model M1            
+                # df1M1 = pd.DataFrame([resM1.tolist(), #best result
+                #         reslM1.tolist(), # low 
+                #         reshM1.tolist()]) # high
 
-                df1M1.to_excel(writer3statesM1,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=1, header=False, index=False)
-                df2M1 = pd.DataFrame([name.replace('result_','')]) #filename
-                df2M1.to_excel(writer3statesM1,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=0, header=False, index=False)
-                df22M1 = pd.DataFrame([resM1, reslM1, reshM1,['']])
-                df22M1.insert(0, "Data", df2M1)
-                df22M1.to_csv(csvfilename3statesM1, mode='a', index=False, header=False)
-                #### Model M2            
-                df1M2 = pd.DataFrame([resM2.tolist(), #best result
-                        reslM2.tolist(), # low 
-                        reshM2.tolist()]) # high
+                # df1M1.to_excel(writer3statesM1,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=1, header=False, index=False)
+                # df2M1 = pd.DataFrame([name.replace('result_','')]) #filename
+                # df2M1.to_excel(writer3statesM1,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=0, header=False, index=False)
+                # df22M1 = pd.DataFrame([resM1, reslM1, reshM1,['']])
+                # df22M1.insert(0, "Data", df2M1)
+                # df22M1.to_csv(csvfilename3statesM1, mode='a', index=False, header=False)
+                # #### Model M2            
+                # df1M2 = pd.DataFrame([resM2.tolist(), #best result
+                #         reslM2.tolist(), # low 
+                #         reshM2.tolist()]) # high
 
-                df1M2.to_excel(writer3statesM2,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=1, header=False, index=False)
-                df2M2 = pd.DataFrame([name.replace('result_','')]) #filename
-                df2M2.to_excel(writer3statesM2,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=0, header=False, index=False)
-                df22M2 = pd.DataFrame([resM2, reslM2, reshM2,['']])
-                df22M2.insert(0, "Data", df2M2)
-                df22M2.to_csv(csvfilename3statesM2, mode='a', index=False, header=False)
+                # df1M2.to_excel(writer3statesM2,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=1, header=False, index=False)
+                # df2M2 = pd.DataFrame([name.replace('result_','')]) #filename
+                # df2M2.to_excel(writer3statesM2,sheet_name='Sheet1', startrow=4*(ifile+1)-3, startcol=0, header=False, index=False)
+                # df22M2 = pd.DataFrame([resM2, reslM2, reshM2,['']])
+                # df22M2.insert(0, "Data", df2M2)
+                # df22M2.to_csv(csvfilename3statesM2, mode='a', index=False, header=False)
 
 
-        writer2states.save()
-        if fit3exp==True:
-            writer3statesM1.save()
-            writer3statesM2.save()
+        # writer2states.save()
+        # if fit3exp==True:
+        #     writer3statesM1.save()
+        #     writer3statesM2.save()
+        return xsg,fsg,p2min,xlmin,flmin,p1min
